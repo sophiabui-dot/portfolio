@@ -139,8 +139,12 @@ a:focus-visible {
 
 .project-menu summary::after {
   display: inline-block;
-  margin-left: 8px;
-  content: "⌄";
+  margin-left: 9px;
+  border-top: 5px solid currentColor;
+  border-right: 4px solid transparent;
+  border-left: 4px solid transparent;
+  content: "";
+  vertical-align: middle;
 }
 
 .project-menu[open] summary,

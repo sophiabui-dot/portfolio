@@ -86,10 +86,88 @@
         color: inherit;
       }
 
-      .custom-cursor,
-      .music-toggle {
+      .custom-cursor {
         position: fixed;
         z-index: 20;
+      }
+
+      .drawing-canvas {
+        position: absolute;
+        z-index: 0;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .drawing-capture {
+        position: fixed;
+        z-index: 19;
+        inset: 0;
+        display: none;
+        touch-action: none;
+      }
+
+      .drawing-capture.is-active {
+        display: block;
+      }
+
+      .drawing-toggle {
+        position: fixed;
+        z-index: 21;
+        right: 18px;
+        bottom: calc(18px + env(safe-area-inset-bottom));
+        display: grid;
+        width: 50px;
+        height: 50px;
+        place-items: center;
+        border: 1px solid rgb(17 17 17 / 12%);
+        border-radius: 50%;
+        background: var(--pink);
+        color: #fff;
+        cursor: pointer;
+        box-shadow: 0 5px 18px rgb(243 52 64 / 20%);
+        transition:
+          background 180ms ease,
+          transform 180ms ease,
+          box-shadow 180ms ease;
+      }
+
+      .drawing-toggle:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgb(243 52 64 / 28%);
+      }
+
+      .drawing-toggle[aria-pressed="true"] {
+        background: var(--green);
+      }
+
+      .drawing-toggle:focus-visible {
+        outline: 2px solid var(--ink);
+        outline-offset: 4px;
+      }
+
+      .drawing-toggle svg {
+        width: 23px;
+        height: 23px;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.8;
+      }
+
+      body.is-drawing,
+      body.is-drawing * {
+        cursor: crosshair !important;
+      }
+
+      body.is-drawing .custom-cursor {
+        display: none !important;
+      }
+
+      body.is-drawing .drawing-toggle {
+        cursor: pointer !important;
       }
 
       .custom-cursor {
@@ -116,70 +194,6 @@
         transform: scale(1.25);
       }
 
-      .music-toggle {
-        right: 18px;
-        bottom: 18px;
-        display: inline-flex;
-        min-height: 43px;
-        align-items: center;
-        justify-content: center;
-        gap: 9px;
-        padding: 0 15px;
-        border: 1px solid rgb(17 17 17 / 12%);
-        border-radius: 99px;
-        background: var(--pink);
-        color: #fff;
-        font: 600 12px var(--display);
-        cursor: pointer;
-        box-shadow: 0 5px 18px rgb(243 52 64 / 20%);
-        transition:
-          background 180ms ease,
-          transform 180ms ease,
-          box-shadow 180ms ease;
-      }
-
-      .music-toggle:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgb(243 52 64 / 28%);
-      }
-
-      .music-toggle:focus-visible {
-        outline: 2px solid var(--ink);
-        outline-offset: 4px;
-      }
-
-      .music-toggle:disabled {
-        color: #727272;
-        cursor: not-allowed;
-      }
-
-      .music-toggle svg {
-        width: 16px;
-        height: 16px;
-        flex: 0 0 auto;
-        fill: none;
-        stroke: currentColor;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        stroke-width: 1.5;
-      }
-
-      .music-toggle .sound-waves {
-        display: none;
-      }
-
-      .music-toggle .sound-mute {
-        display: block;
-      }
-
-      .music-toggle[aria-pressed="true"] .sound-waves {
-        display: block;
-      }
-
-      .music-toggle[aria-pressed="true"] .sound-mute {
-        display: none;
-      }
-
       @media (hover: hover) and (pointer: fine) {
         body,
         body * {
@@ -202,6 +216,9 @@
         z-index: 2;
         top: 31px;
         left: var(--gutter);
+        display: flex;
+        align-items: center;
+        width: calc(100% - 2 * var(--gutter));
       }
 
       .brand {
@@ -218,16 +235,14 @@
       }
 
       .palette {
-        position: absolute;
-        top: 37px;
-        right: 22px;
         display: flex;
         gap: 10px;
+        margin-left: 12px;
       }
 
       .palette-dot {
-        width: 15px;
-        height: 15px;
+        width: 12px;
+        height: 12px;
         border-radius: 50%;
       }
 
@@ -251,7 +266,11 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-top: 15px;
+        margin-left: 12px;
+      }
+
+      .palette {
+        margin-left: 12px;
       }
 
       .navigation a,
@@ -291,7 +310,7 @@
       .artwork {
         position: absolute;
         top: 50%;
-        left: 50%;
+        left: 66.6667%;
         width: min(68vw, 860px, calc(100vw - 36px));
         aspect-ratio: 1.4;
         transform: translate(-50%, -50%);
@@ -398,16 +417,33 @@
 
         .navigation {
           gap: 7px;
-          margin-top: 16px;
         }
 
         .artwork {
+          left: 50%;
           top: 55%;
           width: min(420px, calc(100vw - 34px));
         }
 
         .project {
           box-shadow: 0 5px 13px var(--card-shadow, rgb(17 17 17 / 16%));
+        }
+      }
+
+      @media (max-width: 380px) {
+        .navigation a,
+        .navigation button {
+          padding: 7px 6px;
+          font-size: 10px;
+        }
+
+        .palette {
+          gap: 6px;
+        }
+
+        .palette-dot {
+          width: 9.6px;
+          height: 9.6px;
         }
       }
 
@@ -438,6 +474,7 @@
   </head>
   <body>
     <main class="page">
+      <canvas class="drawing-canvas" aria-hidden="true"></canvas>
       <header class="masthead">
         <a class="brand" href="#home" aria-label="Sophia Bui home">
           <img src="assets/sophia-bui-logo.png" alt="Sophia Bui">
@@ -446,36 +483,35 @@
           <a href="#about">about</a>
           <a href="mailto:hello@sophiabui.design">contact</a>
         </nav>
+        <div class="palette" aria-label="Brand colors" aria-hidden="true">
+          <span class="palette-dot"></span>
+          <span class="palette-dot"></span>
+          <span class="palette-dot"></span>
+          <span class="palette-dot"></span>
+        </div>
       </header>
-
-      <div class="palette" aria-label="Brand colors" aria-hidden="true">
-        <span class="palette-dot"></span>
-        <span class="palette-dot"></span>
-        <span class="palette-dot"></span>
-        <span class="palette-dot"></span>
-      </div>
 
       <section class="artwork" aria-label="Selected graphic design projects">
         <a
           class="project"
-          href="projects/slow-sunday.html"
-          aria-label="View the Slow Sunday project"
+          href="projects/personal-logo.html"
+          aria-label="View the Personal Logo project"
           style="--left: 0%; --top: 30%; --width: 35.7%; --height: 41.7%; --layer: 1; --card-color: #f33440; --card-shadow: rgb(243 52 64 / 24%);"
         >
           <img
-            src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&amp;fit=crop&amp;w=600&amp;q=80"
+            src="assets/personal-logo-thumbnail.jpg"
             alt=""
           >
         </a>
 
         <a
           class="project"
-          href="projects/soft-forms.html"
-          aria-label="View the Soft Forms project"
+          href="projects/3d-render.html"
+          aria-label="View the 3D Render project"
           style="--left: 25%; --top: 0%; --width: 47.6%; --height: 51%; --layer: 2; --card-color: #ffdd1d; --card-shadow: rgb(224 184 16 / 25%);"
         >
           <img
-            src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&amp;fit=crop&amp;w=700&amp;q=80"
+            src="assets/3d-render.png"
             alt=""
           >
         </a>
@@ -499,7 +535,7 @@
           style="--left: 11.3%; --top: 64.5%; --width: 22%; --height: 35%; --layer: 4; --card-color: #078d45; --card-shadow: rgb(7 141 69 / 24%);"
         >
           <img
-            src="https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&amp;fit=crop&amp;w=600&amp;q=80"
+            src="assets/garden-party-thumbnail.png"
             alt=""
           >
         </a>
@@ -544,18 +580,18 @@
       <span class="cursor-ring"></span>
     </div>
 
+    <div class="drawing-capture" aria-hidden="true"></div>
     <button
-      class="music-toggle"
+      class="drawing-toggle"
       type="button"
-      aria-label="Play background music"
+      aria-label="Enable background drawing"
       aria-pressed="false"
+      title="Draw on background"
     >
-      <svg viewBox="0 0 20 20" aria-hidden="true">
-        <path d="M9 4 5.5 7H3v6h2.5L9 16V4Z"></path>
-        <path class="sound-waves" d="M12 7.2a4 4 0 0 1 0 5.6M14.5 4.8a7.4 7.4 0 0 1 0 10.4"></path>
-        <path class="sound-mute" d="m12 8 4 4m0-4-4 4"></path>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m4 20 4.5-1 10.8-10.8a2.1 2.1 0 0 0-3-3L5.5 16 4 20Z"></path>
+        <path d="m14.8 7.7 3 3"></path>
       </svg>
-      <span class="music-label">Play music</span>
     </button>
 
     <script>
@@ -566,8 +602,143 @@
       const projects = [...document.querySelectorAll(".project")];
       const customCursor = document.querySelector(".custom-cursor");
       const cursorRing = document.querySelector(".cursor-ring");
-      const musicButton = document.querySelector(".music-toggle");
-      const musicLabel = document.querySelector(".music-label");
+      const drawingCanvas = document.querySelector(".drawing-canvas");
+      const drawingContext = drawingCanvas.getContext("2d");
+      const drawingCapture = document.querySelector(".drawing-capture");
+      const drawingToggle = document.querySelector(".drawing-toggle");
+      let isDrawingEnabled = false;
+      let activePointerId = null;
+      let previousPoint = null;
+
+      if (!drawingContext) {
+        drawingToggle.disabled = true;
+        drawingToggle.setAttribute("aria-label", "Background drawing is unavailable");
+        drawingToggle.title = "Background drawing is unavailable";
+      } else {
+        function resizeDrawingCanvas() {
+          const bounds = drawingCanvas.getBoundingClientRect();
+          const width = Math.max(1, Math.round(bounds.width));
+          const height = Math.max(1, Math.round(bounds.height));
+          const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+          const pixelWidth = Math.round(width * pixelRatio);
+          const pixelHeight = Math.round(height * pixelRatio);
+
+          if (
+            drawingCanvas.width === pixelWidth &&
+            drawingCanvas.height === pixelHeight
+          ) {
+            return;
+          }
+
+          const previousCanvas = document.createElement("canvas");
+          previousCanvas.width = drawingCanvas.width;
+          previousCanvas.height = drawingCanvas.height;
+
+          if (previousCanvas.width && previousCanvas.height) {
+            previousCanvas
+              .getContext("2d")
+              .drawImage(drawingCanvas, 0, 0);
+          }
+
+          drawingCanvas.width = pixelWidth;
+          drawingCanvas.height = pixelHeight;
+          drawingContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+          if (previousCanvas.width && previousCanvas.height) {
+            drawingContext.drawImage(
+              previousCanvas,
+              0,
+              0,
+              previousCanvas.width,
+              previousCanvas.height,
+              0,
+              0,
+              width,
+              height,
+            );
+          }
+
+          drawingContext.lineWidth = 3;
+          drawingContext.lineCap = "round";
+          drawingContext.lineJoin = "round";
+          drawingContext.strokeStyle = "#f33440";
+        }
+
+        function setDrawingEnabled(isEnabled) {
+          isDrawingEnabled = isEnabled;
+          document.body.classList.toggle("is-drawing", isEnabled);
+          drawingCapture.classList.toggle("is-active", isEnabled);
+          drawingToggle.setAttribute("aria-pressed", String(isEnabled));
+          drawingToggle.setAttribute(
+            "aria-label",
+            isEnabled ? "Stop drawing" : "Enable background drawing",
+          );
+          drawingToggle.title = isEnabled
+            ? "Stop drawing (Escape)"
+            : "Draw on background";
+        }
+
+        function finishStroke(event) {
+          if (event.pointerId !== activePointerId) {
+            return;
+          }
+
+          activePointerId = null;
+          previousPoint = null;
+        }
+
+        resizeDrawingCanvas();
+        window.addEventListener("resize", resizeDrawingCanvas);
+
+        drawingToggle.addEventListener("click", () => {
+          setDrawingEnabled(!isDrawingEnabled);
+        });
+
+        drawingCapture.addEventListener("pointerdown", (event) => {
+          if (!isDrawingEnabled) {
+            return;
+          }
+
+          event.preventDefault();
+          activePointerId = event.pointerId;
+          previousPoint = {
+            x: event.clientX,
+            y: event.clientY,
+          };
+          drawingCapture.setPointerCapture(activePointerId);
+        });
+
+        drawingCapture.addEventListener("pointermove", (event) => {
+          if (event.pointerId !== activePointerId || !previousPoint) {
+            return;
+          }
+
+          const bounds = drawingCanvas.getBoundingClientRect();
+          drawingContext.beginPath();
+          drawingContext.moveTo(
+            previousPoint.x - bounds.left,
+            previousPoint.y - bounds.top,
+          );
+          drawingContext.lineTo(
+            event.clientX - bounds.left,
+            event.clientY - bounds.top,
+          );
+          drawingContext.stroke();
+          previousPoint = {
+            x: event.clientX,
+            y: event.clientY,
+          };
+        });
+
+        drawingCapture.addEventListener("pointerup", finishStroke);
+        drawingCapture.addEventListener("pointercancel", finishStroke);
+        drawingCapture.addEventListener("lostpointercapture", finishStroke);
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && isDrawingEnabled) {
+            setDrawingEnabled(false);
+          }
+        });
+      }
 
       aboutLink.addEventListener("click", (event) => {
         event.preventDefault();
@@ -623,107 +794,6 @@
         });
       }
 
-      const AudioContextClass = window.AudioContext;
-
-      if (!AudioContextClass) {
-        musicButton.disabled = true;
-        musicLabel.textContent = "Music unavailable";
-        musicButton.setAttribute("aria-label", "Background music is unavailable");
-      } else {
-        const audioContext = new AudioContextClass();
-        const sampleRate = audioContext.sampleRate;
-        const chordDuration = 4;
-        const chordNotes = [
-          [130.81, 164.81, 196, 246.94],
-          [110, 130.81, 164.81, 196],
-          [87.31, 110, 130.81, 174.61],
-          [98, 123.47, 146.83, 196],
-        ];
-        const audioBuffer = audioContext.createBuffer(
-          1,
-          Math.floor(sampleRate * chordDuration * chordNotes.length),
-          sampleRate,
-        );
-        const samples = audioBuffer.getChannelData(0);
-        const crossfadeDuration = 0.55;
-
-        for (let frame = 0; frame < samples.length; frame += 1) {
-          const time = frame / sampleRate;
-          const chordPosition = time % chordDuration;
-          const chord = chordNotes[Math.floor(time / chordDuration)];
-          const envelope = Math.min(
-            1,
-            chordPosition / crossfadeDuration,
-            (chordDuration - chordPosition) / crossfadeDuration,
-          );
-          let sound = 0;
-
-          for (const frequency of chord) {
-            const phase = 2 * Math.PI * frequency * time;
-            const voice = Math.sin(phase) + 0.16 * Math.sin(phase * 2);
-            sound += voice / chord.length;
-          }
-
-          samples[frame] = sound * envelope * 0.45;
-        }
-
-        const musicSource = audioContext.createBufferSource();
-        const musicGain = audioContext.createGain();
-        musicSource.buffer = audioBuffer;
-        musicSource.loop = true;
-        musicGain.gain.value = 0;
-        musicSource.connect(musicGain);
-        musicGain.connect(audioContext.destination);
-        musicSource.start();
-
-        let musicEnabled = false;
-        let musicChange = 0;
-
-        function updateMusicButton(isEnabled) {
-          musicEnabled = isEnabled;
-          musicButton.setAttribute("aria-pressed", String(isEnabled));
-          musicButton.setAttribute(
-            "aria-label",
-            isEnabled ? "Mute background music" : "Play background music",
-          );
-          musicLabel.textContent = isEnabled ? "Mute music" : "Play music";
-        }
-
-        function setMusicEnabled(isEnabled) {
-          const change = ++musicChange;
-
-          if (!isEnabled) {
-            updateMusicButton(false);
-            musicGain.gain.cancelScheduledValues(audioContext.currentTime);
-            musicGain.gain.setTargetAtTime(0, audioContext.currentTime, 0.16);
-            return;
-          }
-
-          audioContext.resume().then(() => {
-            if (change !== musicChange) {
-              return;
-            }
-
-            updateMusicButton(true);
-            musicGain.gain.cancelScheduledValues(audioContext.currentTime);
-            musicGain.gain.setTargetAtTime(0.1, audioContext.currentTime, 0.35);
-          }).catch((error) => {
-            if (change !== musicChange) {
-              return;
-            }
-
-            console.error("Background music could not be started.", error);
-            updateMusicButton(false);
-          });
-        }
-
-        musicButton.addEventListener("click", () => {
-          setMusicEnabled(!musicEnabled);
-        });
-
-        setMusicEnabled(true);
-      }
-
       if (
         window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
         !window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -744,8 +814,8 @@
           const easing = 1 - Math.exp(-elapsed / 650);
           lastFrameTime = timestamp;
           const artworkBounds = artwork.getBoundingClientRect();
-          const radius = Math.min(artworkBounds.width * 0.36, 240);
-          const maxOffset = 52;
+          const radius = Math.min(artworkBounds.width * 0.48, 320);
+          const maxOffset = 78;
 
           projects.forEach((project, index) => {
             const state = states[index];
@@ -775,7 +845,7 @@
             project.style.setProperty("--float-y", `${state.y.toFixed(2)}px`);
             project.style.setProperty(
               "--float-rotation",
-              `${(state.x * 0.025).toFixed(2)}deg`,
+              `${(state.x * 0.035).toFixed(2)}deg`,
             );
             isMoving ||= Math.abs(state.x - targetX) > 0.1 ||
               Math.abs(state.y - targetY) > 0.1;

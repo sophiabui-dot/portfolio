@@ -10,9 +10,9 @@ the front on hover or keyboard focus. Each thumbnail links to its own page in
 dialog, and contact email in `index.html` and the corresponding project pages.
 Project photography loads from Unsplash.
 
-The homepage also includes an animated sparkle cursor and an original,
-procedurally generated ambient loop. A music toggle is fixed to the bottom-right
-corner; when the browser blocks autoplay, select **Play music** to start audio.
+The homepage also includes an animated sparkle cursor and a pencil tool for
+doodling on the background. Select the pencil button in the bottom-right corner
+to start or stop drawing; sketches remain visible until the page is reloaded.
 
 The visual theme follows Sophia's personal logo: crisp white, black, bright
 red, sky blue, sunny yellow, and green, with playful Fredoka display
